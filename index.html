@@ -922,24 +922,37 @@
 </section>
 
 <script>
-function submitWaitlist() {
+async function submitWaitlist() {
   var name = document.getElementById('wl-name').value.trim();
   var email = document.getElementById('wl-email').value.trim();
-  if (!name || !email) {
-    alert('Please enter your name and email.');
-    return;
+  var biz = document.getElementById('wl-biz').value.trim();
+  var tool = document.getElementById('wl-tool').value;
+  if (!name || !email) { alert('Please enter your name and email.'); return; }
+  if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) { alert('Please enter a valid email address.'); return; }
+
+  var btn = document.querySelector('#waitlist-form button');
+  btn.textContent = 'Submitting…';
+  btn.disabled = true;
+
+  try {
+    // ⚠️ Replace YOUR_FORM_ID below with your Formspree form ID
+    // Sign up free at formspree.io → New Form → copy the ID from the endpoint
+    var res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ name, email, business: biz, tool, _subject: 'New Faith Waitlist Signup 🎉' })
+    });
+    if (res.ok) {
+      document.getElementById('waitlist-form').style.display = 'none';
+      document.getElementById('waitlist-success').style.display = 'block';
+    } else {
+      throw new Error('Server error');
+    }
+  } catch(e) {
+    btn.textContent = 'Reserve my spot →';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again or email us directly.');
   }
-  if (!/^[^@]+@[^@]+\.[^@]+$/.test(email)) {
-    alert('Please enter a valid email address.');
-    return;
-  }
-  document.getElementById('waitlist-form').style.display = 'none';
-  document.getElementById('waitlist-success').style.display = 'block';
-  // Store locally so you can see who signed up
-  var entries = JSON.parse(localStorage.getItem('faith_waitlist') || '[]');
-  entries.push({ name: name, biz: document.getElementById('wl-biz').value, email: email, tool: document.getElementById('wl-tool').value, date: new Date().toISOString() });
-  localStorage.setItem('faith_waitlist', JSON.stringify(entries));
-  console.log('Faith waitlist:', JSON.stringify(entries, null, 2));
 }
 </script>
 
