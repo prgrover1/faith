@@ -935,9 +935,9 @@ async function submitWaitlist() {
   btn.disabled = true;
 
   try {
-    // ⚠️ Replace YOUR_FORM_ID below with your Formspree form ID
+    // ⚠️ Replace  below with your Formspree form ID
     // Sign up free at formspree.io → New Form → copy the ID from the endpoint
-    var res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+    var res = await fetch('https://formspree.io/f/xlgawlzo', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ name, email, business: biz, tool, _subject: 'New Faith Waitlist Signup 🎉' })
